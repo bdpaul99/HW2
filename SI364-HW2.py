@@ -10,14 +10,35 @@
 ## Edit the following Flask application code so that if you run the application locally and got to the URL http://localhost:5000/question, you see a form that asks you to enter your favorite number. Once you enter a number and submit it to the form, you should then see a web page that says "Double your favorite number is <number>". For example, if you enter 2 into the form, you should then see a page that says "Double your favorite number is 4". Careful about types in your Python code!
 ## You can assume a user will always enter a number only.
 
-from flask import Flask
+from flask import Flask, render_template, request
 app = Flask(__name__)
 app.debug = True
 
 @app.route('/')
 def hello_to_you():
     return 'Hello!'
-
+@app.route('/question')
+def question():
+    html_form = '''
+    <html>
+    <body>
+    <form method="GET" action="http://localhost:5000/question-result">
+        <label>Enter Your Favorite Number:
+            <input name="num" value="0" type="number">
+        </label></br>
+        <input type="submit" value="Submit">
+    </form>
+    </body>
+    </html>
+    '''
+    return html_form
+@app.route('/question-result', methods = ['GET', 'POST'])
+def displayQuestion():
+    if request.method == "GET":
+        result = request.args
+        num = int(result.get("num"))
+        strnum = str(num * 2)
+        return "<h1>Double your favorite number is {}</h1>".format(strnum)
 
 if __name__ == '__main__':
     app.run()
