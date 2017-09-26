@@ -11,6 +11,8 @@
 ## You can assume a user will always enter a number only.
 
 from flask import Flask, render_template, request
+
+
 app = Flask(__name__)
 app.debug = True
 
@@ -40,8 +42,7 @@ def displayQuestion():
         strnum = str(num * 2)
         return "<h1>Double your favorite number is {}</h1>".format(strnum)
 
-if __name__ == '__main__':
-    app.run()
+
 
 
 ## [PROBLEM 2]
@@ -55,11 +56,32 @@ if __name__ == '__main__':
 
 # You can assume that a user will give you the type of input/response you expect in your form; you do not need to handle errors or user confusion. (e.g. if your form asks for a name, you can assume a user will type a reasonable name; if your form asks for a number, you can assume a user will type a reasonable number; if your form asks the user to select a checkbox, you can assume they will do that.)
 
+@app.route('/nfl')
+def nflQuiz():
+    html_form = '''
+    <html>
+    </body>
+    <form method="GET" action="http://localhost:5000/nfl-answer"> What active QB has the most 4th quarter comebacks since 2011 in the NFL? <br>
+     <input type="radio" name="qb" value="Matt Stafford" checked>Matt Stafford<br>
+     <input type="radio" name="qb" value="Tom Brady"> Tom Brady<br>
+     <input type="radio" name="qb" value="Matt Ryan"> Matt Ryan <br>
+     <input type="submit" value="Submit">
+    </form>
+    </body>
+    </html>
+    '''
+    return html_form
+@app.route('/nfl-answer', methods = ['GET',"POST"])
+def nflAnswer():
+    if request.method == "GET":
+        result = request.args
+        if result.get("qb") == "Matt Stafford":
+            return "<h1>Correct! Matt Stafford has 26 fourth quarter comebacks since 2011</h1>"
+        else:
+            return "<h1>Incorrect. Matt Stafford has more fourth quarter comebacks than {}</h1>".format(result.get("qb"))
 
-
-
-
-
+if __name__ == '__main__':
+    app.run()
 
 
 
